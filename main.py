@@ -154,7 +154,7 @@ def acharContato(contatoTemp):
         )
         print(('O contato {0} foi encontrado').format(contato))
         label = (sessao.find_element_by_class_name("YGe90")).text
-        # print(('Label achada: {0}').format(label))
+        print(('Label achada: {0}').format(label))
         if label == "CONVERSAS":
             conversa = sessao.find_element_by_class_name("_3OvU8")
             conversa.click()
