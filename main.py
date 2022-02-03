@@ -28,11 +28,10 @@ global alfabeto
 alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
+    print('O robo foi executado')
     global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
-    tempoInicial = time.strftime("%H:%M:%S", t)
-    print(tempoInicial)
     input = {'width' : 30,
              'height' : 1}
 
@@ -69,6 +68,8 @@ def carregarTela():
 
 
 def carregarContatos():
+    tempoInicial = time.strftime("%H:%M:%S", t)
+    print(('Inicio do script: {0}').format(tempoInicial))
     print('Carregando Contatos')
     if  inputInicial.get() != "" and inputFinal.get() != "":
         print(("Contatos Originais: {0}, {1}").format(inputInicial.get(), inputFinal.get()))
@@ -94,7 +95,6 @@ def carregarContatos():
         iniciaSessao()
     else:
         print("Indique o intervalo de contratos que devem ser processados!")
-        raise SystemExit
 
 
 def iniciaSessao():
@@ -127,11 +127,12 @@ def verificarQRCode():
         while contatoTemp <= contato_final:
             acharContato(contatoTemp)
             contatoTemp = str(int(contatoTemp)+1).rjust(8, '0')
+        print('Todos os contatos foram pesquisados')
         sair()
     except TimeoutException:
         print('O QRCode não foi lido!')
     except NoSuchElementException:
-        print('O robo não conseguiu achar todos os campos necessarios!')
+        print('O robo não conseguiu achar o campo de pesquisa!')
 
 def acharContato(contatoTemp):
     contato = alfabeto[int(contatoTemp[0])] + alfabeto[int(contatoTemp[1])] + alfabeto[int(contatoTemp[2])] + contatoTemp[3] + contatoTemp[4] + contatoTemp[5] + contatoTemp[6] + contatoTemp[7]
@@ -140,30 +141,38 @@ def acharContato(contatoTemp):
     text.send_keys(Keys.CONTROL, 'a')
     text.send_keys(contato)
     try:
-        element = WebDriverWait(sessao, 10).until(
+        element = WebDriverWait(sessao, 15).until(
             EC.presence_of_element_located((By.CLASS_NAME, "_3GYfN"))
         )
-        element = WebDriverWait(sessao, 1).until(
+    except TimeoutException:
+        print(('A pesquisa demorou demais!').format(contato))
+    except NoSuchElementException:
+        print('O robô não conseguiu fazer a pesquisa!')
+    try:
+        element = WebDriverWait(sessao, 3).until(
             EC.presence_of_element_located((By.CLASS_NAME, "YGe90"))
         )
-        print('Pesquisa Concluida')
+        print(('O contato {0} foi encontrado').format(contato))
         label = (sessao.find_element_by_class_name("YGe90")).text
-        print(('Label: {0}').format(label))
+        # print(('Label achada: {0}').format(label))
         if label == "CONVERSAS":
             conversa = sessao.find_element_by_class_name("_3OvU8")
             conversa.click()
             mandarMensagem()
+        else:
+            print(('A conversa do contato {0} não encontrado!').format(contato))
+
     except TimeoutException:
-        print(('Contato {0} não encontrado!').format(contatoTemp))
+        print(('O contato {0} não encontrado!').format(contato))
     except NoSuchElementException:
-        print('Ocorreu um erro na pesquisa!')
+        print('O robô não conseguiu enviar a mensagem!')
 
 def mandarMensagem():
     try:
         element = WebDriverWait(sessao, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p3_M1')]/div/div[2]"))
         )
-        print('Enviando mensagem!')
+        print('O robo está enviando a mensagem')
         text = sessao.find_element_by_xpath("//div[contains(@class, 'p3_M1')]/div/div[2]")
         if inputMsg.get() != "":
             text.send_keys(inputMsg.get())
@@ -171,7 +180,7 @@ def mandarMensagem():
             text.send_keys("Olá, esta é uma mensagem de teste, favor desconsiderar!")
         button = sessao.find_element_by_class_name("_4sWnG")
         button.click()
-        print('Mensagem enviada!')
+        print('A mensagem foi enviada')
     except NoSuchElementException:
         print('Ocorreu um erro no envio da mensagem!')
 
@@ -179,17 +188,11 @@ def mandarMensagem():
 def sair():
     print('Fechando o whatsapp')
     sessao.quit()
+    tempoFinal = time.strftime("%H:%M:%S", t)
+    print(('Final do script: {0}').format(tempoFinal))
 
 #Chama a função inicial
 carregarTela()
-
-tempoFinal = time.strftime("%H:%M:%S", t)
-print(tempoFinal)
-try:
-    sessao
-    sessao.quit()
-except NameError:
-    print('Sessao inexistente')
 
 #Note: Some variables may have been named in Brazilian portuguese,
 #so var filho = child and var pai = parent
