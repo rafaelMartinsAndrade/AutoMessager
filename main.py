@@ -167,9 +167,9 @@ def acharContato(contatoTemp):
             mandarMensagem()
 
         except TimeoutException:
-            print(('A conversa do contato {0} não encontrado!').format(contato))
+            print(('A conversa do contato {0} não foi encontrada!').format(contato))
         except NoSuchElementException:
-            print('O robô não conseguiu enviar a mensagem!')
+            print('O robô não conseguiu entrar na conversa!')
 
 def mandarMensagem():
     try:
