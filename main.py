@@ -128,6 +128,7 @@ def verificarQRCode():
             acharContato(contatoTemp)
             contatoTemp = str(int(contatoTemp)+1).rjust(8, '0')
         print('Todos os contatos foram pesquisados')
+        time.sleep(2)
         sair()
     except TimeoutException:
         print('O QRCode não foi lido!')
@@ -161,7 +162,7 @@ def acharContato(contatoTemp):
                 EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'YGe90')][contains(text(),'Conversas')]"))
             )
             print(('A conversa do contato {0} foi encontrada').format(contato))
-            conversa = sessao.find_element_by_class_name("_3OvU8")
+            conversa = sessao.find_element_by_xpath(("//div[contains(@class,'_3OvU8')]/div[1]/div[1]/span/span[contains(text(),'{0}')]").format(contato))
             conversa.click()
             mandarMensagem()
 
