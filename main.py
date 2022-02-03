@@ -24,10 +24,11 @@ import win32api, win32con
 import tkinter as tk
 
 global alfabeto
-alfabeto = 'abcdefghijklmnopqrstuvwxyz'
+# alfabeto = 'abcdefghijklmnopqrstuvwxyz'
+alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
-    global t, inputInicial, inputFinal
+    global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
     tempoInicial = time.strftime("%H:%M:%S", t)
@@ -43,20 +44,26 @@ def carregarTela():
     titleLb = tk.Label(window, text="Olá Vendedor!", bg="black", fg="white")
     titleLb.grid(column=0, columnspan=2, row=0, ipadx=0, pady=0, sticky="nsew")
 
-    labelInicial = tk.Label(window, text="Insira o Contato Inicial:", bg="black", fg="white")
+    labelInicial = tk.Label(window, text="Insira o Contato Inicial*:", bg="black", fg="white")
     labelInicial.grid(column=0, row=3, ipadx=10, pady=10, sticky=tk.W)
 
     inputInicial = tk.Entry(window, bg="white", fg="black")
     inputInicial.grid(column=1, row=3, ipadx=10, pady=10, sticky=tk.W)
 
-    labelInicial = tk.Label(window, text="Insira o Contato Final:", bg="black", fg="white")
+    labelInicial = tk.Label(window, text="Insira o Contato Final*:", bg="black", fg="white")
     labelInicial.grid(column=0, row=4, ipadx=10, pady=10, sticky=tk.W)
 
     inputFinal = tk.Entry(window, bg="white", fg="black")
     inputFinal.grid(column=1, row=4, ipadx=10, pady=10, sticky=tk.W)
 
+    labelMsg = tk.Label(window, text="Insira a Mensagem:", bg="black", fg="white")
+    labelMsg.grid(column=0, row=5, ipadx=10, pady=10, sticky=tk.W)
+
+    inputMsg = tk.Entry(window, bg="white", fg="black")
+    inputMsg.grid(column=1, row=5, ipadx=10, pady=10, sticky=tk.W)
+
     resultButton = tk.Button(window, text='Salvar', command=carregarContatos, width=60)
-    resultButton.grid(column=0, columnspan=2, row=5, padx=10, pady=10, sticky=tk.W)
+    resultButton.grid(column=0, columnspan=2, row=6, padx=10, pady=10, sticky=tk.W)
 
     window.mainloop()
 
@@ -111,7 +118,7 @@ def iniciaSessao():
 def verificarQRCode():
     print('Esperando QRCode ser Lido')
     try:
-        element = WebDriverWait(sessao, 60).until(
+        element = WebDriverWait(sessao, 180).until(
             EC.presence_of_element_located((By.ID, "side"))
         )
         print('QRCode Foi lido')
@@ -119,7 +126,7 @@ def verificarQRCode():
         contatoTemp = contato_inicial
         while contatoTemp <= contato_final:
             acharContato(contatoTemp)
-            contatoTemp = str(int(contatoTemp)+1).rjust(9, '0')
+            contatoTemp = str(int(contatoTemp)+1).rjust(8, '0')
         sair()
     except TimeoutException:
         print('O QRCode não foi lido!')
@@ -127,7 +134,7 @@ def verificarQRCode():
         print('O robo não conseguiu achar todos os campos necessarios!')
 
 def acharContato(contatoTemp):
-    contato = alfabeto[int(contatoTemp[0])] + alfabeto[int(contatoTemp[1])] + alfabeto[int(contatoTemp[2])] + contatoTemp[3] + contatoTemp[4] + contatoTemp[5] + contatoTemp[6] + contatoTemp[7] + contatoTemp[8]
+    contato = alfabeto[int(contatoTemp[0])] + alfabeto[int(contatoTemp[1])] + alfabeto[int(contatoTemp[2])] + contatoTemp[3] + contatoTemp[4] + contatoTemp[5] + contatoTemp[6] + contatoTemp[7]
     print(('Procurando contato {0}').format(contato))
     text = sessao.find_element_by_xpath("//div[contains(@class,'_1UWac')][contains(@class, '_3hKpJ')]//div[contains(@class,'_13NKt')][contains(@class, 'copyable-text')][contains(@class,'selectable-text')]")
     text.send_keys(Keys.CONTROL, 'a')
@@ -158,7 +165,10 @@ def mandarMensagem():
         )
         print('Enviando mensagem!')
         text = sessao.find_element_by_xpath("//div[contains(@class, 'p3_M1')]/div/div[2]")
-        text.send_keys("Olá, esta é uma mensagem de teste, favor desconsiderar!")
+        if inputMsg.get() != "":
+            text.send_keys(inputMsg.get())
+        else:
+            text.send_keys("Olá, esta é uma mensagem de teste, favor desconsiderar!")
         button = sessao.find_element_by_class_name("_4sWnG")
         button.click()
         print('Mensagem enviada!')
