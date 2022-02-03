@@ -140,6 +140,7 @@ def acharContato(contatoTemp):
     text = sessao.find_element_by_xpath("//div[contains(@class,'_1UWac')][contains(@class, '_3hKpJ')]//div[contains(@class,'_13NKt')][contains(@class, 'copyable-text')][contains(@class,'selectable-text')]")
     text.send_keys(Keys.CONTROL, 'a')
     text.send_keys(contato)
+
     try:
         element = WebDriverWait(sessao, 15).until(
             EC.presence_of_element_located((By.CLASS_NAME, "_3GYfN"))
@@ -148,24 +149,26 @@ def acharContato(contatoTemp):
         print(('A pesquisa demorou demais!').format(contato))
     except NoSuchElementException:
         print('O robô não conseguiu fazer a pesquisa!')
+    
     try:
-        element = WebDriverWait(sessao, 3).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "YGe90"))
+        element = WebDriverWait(sessao, 1).until(
+            EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'i0jNr')][contains(text(),'Nenhuma conversa, contato ou mensagem foram encontradas')]"))
         )
-        print(('O contato {0} foi encontrado').format(contato))
-        label = (sessao.find_element_by_class_name("YGe90")).text
-        print(('Label achada: {0}').format(label))
-        if label == "CONVERSAS":
+        print(('O contato {0} não foi encontrada').format(contato))
+    except TimeoutException:
+        try:
+            element = WebDriverWait(sessao, 1).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'YGe90')][contains(text(),'Conversas')]"))
+            )
+            print(('A conversa do contato {0} foi encontrada').format(contato))
             conversa = sessao.find_element_by_class_name("_3OvU8")
             conversa.click()
             mandarMensagem()
-        else:
-            print(('A conversa do contato {0} não encontrado!').format(contato))
 
-    except TimeoutException:
-        print(('O contato {0} não encontrado!').format(contato))
-    except NoSuchElementException:
-        print('O robô não conseguiu enviar a mensagem!')
+        except TimeoutException:
+            print(('A conversa do contato {0} não encontrado!').format(contato))
+        except NoSuchElementException:
+            print('O robô não conseguiu enviar a mensagem!')
 
 def mandarMensagem():
     try:
