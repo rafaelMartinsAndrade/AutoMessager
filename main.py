@@ -28,7 +28,7 @@ global alfabeto
 alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
-    print('O robo foi executado')
+    print('Versão do Robo: 1.7 Beta')
     global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
@@ -185,6 +185,8 @@ def mandarMensagem():
         button = sessao.find_element_by_class_name("_4sWnG")
         button.click()
         print('A mensagem foi enviada')
+    except TimeoutException:
+        print('O robo não conseguiu encontrar os inputs!')
     except NoSuchElementException:
         print('Ocorreu um erro no envio da mensagem!')
 
