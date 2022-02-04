@@ -28,7 +28,7 @@ global alfabeto
 alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
-    print('Versão do Robo: 1.7 Beta')
+    print('Versão do Robo: 1.8 Beta')
     global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
@@ -61,7 +61,7 @@ def carregarTela():
     inputMsg = tk.Entry(window, bg="white", fg="black")
     inputMsg.grid(column=1, row=5, ipadx=10, pady=10, sticky=tk.W)
 
-    resultButton = tk.Button(window, text='Salvar', command=carregarContatos, width=60)
+    resultButton = tk.Button(window, text='Processar Contatos', command=carregarContatos, width=60)
     resultButton.grid(column=0, columnspan=2, row=6, padx=10, pady=10, sticky=tk.W)
 
     window.mainloop()
@@ -73,28 +73,31 @@ def carregarContatos():
     print('Carregando Contatos')
     if  inputInicial.get() != "" and inputFinal.get() != "":
         print(("Contatos Originais: {0}, {1}").format(inputInicial.get(), inputFinal.get()))
-        global contato_inicial
+        global contato_inicial, arrContato_inicial, contato_final, arrContato_inicial
         contato_inicial = ""
-        global contato_final
+        arrContato_inicial = []
         contato_final = ""
+        arrContato_final = []
 
         for caractere in inputInicial.get():
             if alfabeto.find(caractere) == -1:
-                contato_inicial += str(caractere)
+                arrContato_inicial.append(str(caractere))
             else:
-                contato_inicial += str(alfabeto.find(caractere))
+                arrContato_inicial.append(str(alfabeto.find(caractere)))
+        contato_inicial = "".join(arrContato_inicial)
 
         for caractere in inputFinal.get():
             if alfabeto.find(caractere) == -1:
-                contato_final += str(caractere)
+                arrContato_final.append(str(caractere)) 
             else:
-                contato_final += str(alfabeto.find(caractere))
+                arrContato_final.append(str(alfabeto.find(caractere))) 
+        contato_final = "".join(arrContato_final)
 
         print(("Contatos Numericos: {0}, {1}").format(contato_inicial, contato_final))
 
         iniciaSessao()
     else:
-        print("Indique o intervalo de contratos que devem ser processados!")
+        print("Indique o intervalo de contatos que devem ser processados!")
 
 
 def iniciaSessao():
@@ -122,12 +125,33 @@ def verificarQRCode():
             EC.presence_of_element_located((By.ID, "side"))
         )
         print('QRCode Foi lido')
-        global contatoTemp
+        global contatoTemp, arrContatoTemp
         contatoTemp = contato_inicial
+        arrContatoTemp = arrContato_inicial
+
         while contatoTemp <= contato_final:
             acharContato(contatoTemp)
-            contatoTemp = str(int(contatoTemp)+1).rjust(8, '0')
-        print('Todos os contatos foram pesquisados')
+            somou = False
+            contatoSoma = []
+            count = 0
+            for (i, numero) in enumerate(reversed(arrContatoTemp)):
+                numero = int(numero)
+                if not somou:
+                    if(i < 5):
+                        if(numero == 9):
+                            numero = 0
+                        else:
+                            numero += 1
+                            somou = True
+                    else:
+                        if(numero != 25):
+                            numero += 1
+                            somou = True
+                    count += 1
+                contatoSoma.append(str(numero))
+            contatoTemp = ''.join(reversed(contatoSoma))
+            arrContatoTemp = list(reversed(contatoSoma))
+        print('Todos os contatos foram processados')
         time.sleep(2)
         sair()
     except TimeoutException:
@@ -155,21 +179,25 @@ def acharContato(contatoTemp):
         element = WebDriverWait(sessao, 1).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'i0jNr')][contains(text(),'Nenhuma conversa, contato ou mensagem foram encontradas')]"))
         )
-        print(('O contato {0} não foi encontrada').format(contato))
+        print(('O contato {0} não foi encontrado').format(contato))
     except TimeoutException:
         try:
-            element = WebDriverWait(sessao, 1).until(
+            element = WebDriverWait(sessao, 2).until(
                 EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'YGe90')][contains(text(),'Conversas')]"))
             )
-            print(('A conversa do contato {0} foi encontrada').format(contato))
-            conversa = sessao.find_element_by_xpath(("//div[contains(@class,'_3OvU8')]/div[1]/div[1]/span/span[contains(text(),'{0}')]").format(contato))
+            print(('O contato {0} foi encontrado').format(contato))
+            # Caminho para grupo
+            # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span[contains(text(),'{0}')]
+            # Caminho para conversa
+            # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]
+            conversa = sessao.find_element_by_xpath(("//*[@id='pane-side']/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]").format(contato))
             conversa.click()
             mandarMensagem()
 
         except TimeoutException:
-            print(('A conversa do contato {0} não foi encontrada!').format(contato))
+            print(('O contato {0} não foi encontrado!').format(contato))
         except NoSuchElementException:
-            print('O robô não conseguiu entrar na conversa!')
+            print(('A conversa do contato {0} não foi encontrada!').format(contato))
 
 def mandarMensagem():
     try:
