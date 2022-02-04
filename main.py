@@ -185,17 +185,17 @@ def acharContato(contatoTemp):
             element = WebDriverWait(sessao, 2).until(
                 EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'YGe90')][contains(text(),'Conversas')]"))
             )
-            print(('O contato {0} foi encontrado').format(contato))
+            print(('O contato {0} foi encontrado, COD1').format(contato))
             # Caminho para grupo
             # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span[contains(text(),'{0}')]
             # Caminho para conversa
-            # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]
-            conversa = sessao.find_element_by_xpath(("//*[@id='pane-side']/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]").format(contato))
+            # //*[@id='pane-side']/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]
+            conversa = sessao.find_element_by_xpath(("//div[contains(@class,'_3vPI2')]/div/span/span/span[contains(text(),'{0}')]").format(contato))
             conversa.click()
             mandarMensagem()
 
         except TimeoutException:
-            print(('O contato {0} não foi encontrado!').format(contato))
+            print(('O contato {0} não foi encontrado, COD1').format(contato))
         except NoSuchElementException:
             print(('A conversa do contato {0} não foi encontrada!').format(contato))
 
