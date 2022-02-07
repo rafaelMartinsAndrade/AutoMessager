@@ -171,21 +171,21 @@ def acharContato(contatoTemp):
             EC.presence_of_element_located((By.CLASS_NAME, "_3GYfN"))
         )
     except TimeoutException:
-        print(('A pesquisa demorou demais!').format(contato))
+        print(('A pesquisa demorou demais, COD0.1').format(contato))
     except NoSuchElementException:
-        print('O robô não conseguiu fazer a pesquisa!')
+        print('O robô não conseguiu fazer a pesquisa, COD0.2')
     
     try:
         element = WebDriverWait(sessao, 1).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'i0jNr')][contains(text(),'Nenhuma conversa, contato ou mensagem foram encontradas')]"))
         )
-        print(('O contato {0} não foi encontrado').format(contato))
+        print(('O contato {0} não foi encontrado, COD1.1').format(contato))
     except TimeoutException:
         try:
             element = WebDriverWait(sessao, 2).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'YGe90')][contains(text(),'Conversas')]"))
+                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Conversas')]"))
             )
-            print(('O contato {0} foi encontrado, COD1').format(contato))
+            print(('O contato {0} foi encontrado, COD2').format(contato))
             # Caminho para grupo
             # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span[contains(text(),'{0}')]
             # Caminho para conversa
@@ -195,9 +195,9 @@ def acharContato(contatoTemp):
             mandarMensagem()
 
         except TimeoutException:
-            print(('O contato {0} não foi encontrado, COD1').format(contato))
+            print(('O contato {0} não foi encontrado, COD2.1').format(contato))
         except NoSuchElementException:
-            print(('A conversa do contato {0} não foi encontrada!').format(contato))
+            print(('A conversa do contato {0} não foi encontrada, COD2.2').format(contato))
 
 def mandarMensagem():
     try:
@@ -212,11 +212,11 @@ def mandarMensagem():
             text.send_keys("Olá, esta é uma mensagem de teste, favor desconsiderar!")
         button = sessao.find_element_by_class_name("_4sWnG")
         button.click()
-        print('A mensagem foi enviada')
+        print('A mensagem foi enviada, COD3')
     except TimeoutException:
-        print('O robo não conseguiu encontrar os inputs!')
+        print('O robo não conseguiu encontrar os inputs, COD3.1')
     except NoSuchElementException:
-        print('Ocorreu um erro no envio da mensagem!')
+        print('Ocorreu um erro no envio da mensagem, COD3.2')
 
 
 def sair():
