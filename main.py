@@ -28,7 +28,7 @@ global alfabeto
 alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
-    print('Versão do Robo: 1.8 Beta')
+    print('Versão do Robo: 1.9 Beta')
     global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
