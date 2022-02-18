@@ -130,7 +130,7 @@ def verificarQRCode():
         arrContatoTemp = arrContato_inicial
 
         while contatoTemp <= contato_final:
-            acharContato(contatoTemp)
+            acharContato()
             somou = False
             contatoSoma = []
             count = 0
@@ -149,7 +149,7 @@ def verificarQRCode():
                             somou = True
                     count += 1
                 contatoSoma.append(str(numero))
-            contatoTemp = ''.join(reversed(contatoSoma))
+            # contatoTemp = ''.join(reversed(contatoSoma))
             arrContatoTemp = list(reversed(contatoSoma))
         print('Todos os contatos foram processados')
         time.sleep(2)
@@ -159,7 +159,7 @@ def verificarQRCode():
     except NoSuchElementException:
         print('O robo não conseguiu achar o campo de pesquisa!')
 
-def acharContato(contatoTemp):
+def acharContato():
     contato = alfabeto[int(arrContatoTemp[0])] + alfabeto[int(arrContatoTemp[1])] + alfabeto[int(arrContatoTemp[2])] + arrContatoTemp[3] + arrContatoTemp[4] + arrContatoTemp[5] + arrContatoTemp[6] + arrContatoTemp[7]
     print(('Procurando contato {0}').format(contato))
     text = sessao.find_element_by_xpath("//div[contains(@class,'_1UWac')][contains(@class, '_3hKpJ')]//div[contains(@class,'_13NKt')][contains(@class, 'copyable-text')][contains(@class,'selectable-text')]")
