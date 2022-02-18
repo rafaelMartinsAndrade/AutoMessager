@@ -183,7 +183,7 @@ def acharContato(contatoTemp):
     except TimeoutException:
         try:
             element = WebDriverWait(sessao, 2).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Contatos')]"))
+                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Conversas')]"))
             )
             print(('O contato {0} foi encontrado, COD2').format(contato))
             # Caminho para grupo
