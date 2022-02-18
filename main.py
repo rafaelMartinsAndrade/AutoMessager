@@ -28,14 +28,14 @@ global alfabeto
 alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def carregarTela():
-    print('Versão do Robo: 1.9 Beta')
+    print('Versão do Robo: 2.0 Beta')
     global t, inputInicial, inputFinal, inputMsg
 
     t = time.localtime()
     input = {'width' : 30,
              'height' : 1}
 
-    window = tk.Tk(className="\\Bot - VKDIGITAL")
+    window = tk.Tk(className="\\AutoMessager - VKDIGITAL")
     window.configure(bg="black")
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(1, weight=1)
@@ -160,7 +160,7 @@ def verificarQRCode():
         print('O robo não conseguiu achar o campo de pesquisa!')
 
 def acharContato(contatoTemp):
-    contato = alfabeto[int(contatoTemp[0])] + alfabeto[int(contatoTemp[1])] + alfabeto[int(contatoTemp[2])] + contatoTemp[3] + contatoTemp[4] + contatoTemp[5] + contatoTemp[6] + contatoTemp[7]
+    contato = alfabeto[int(arrContatoTemp[0])] + alfabeto[int(arrContatoTemp[1])] + alfabeto[int(arrContatoTemp[2])] + arrContatoTemp[3] + arrContatoTemp[4] + arrContatoTemp[5] + arrContatoTemp[6] + arrContatoTemp[7]
     print(('Procurando contato {0}').format(contato))
     text = sessao.find_element_by_xpath("//div[contains(@class,'_1UWac')][contains(@class, '_3hKpJ')]//div[contains(@class,'_13NKt')][contains(@class, 'copyable-text')][contains(@class,'selectable-text')]")
     text.send_keys(Keys.CONTROL, 'a')
