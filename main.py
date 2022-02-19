@@ -149,7 +149,7 @@ def verificarQRCode():
                             somou = True
                     count += 1
                 contatoSoma.append(str(numero))
-            # contatoTemp = ''.join(reversed(contatoSoma))
+            contatoTemp = ''.join(reversed(contatoSoma))
             arrContatoTemp = list(reversed(contatoSoma))
         print('Todos os contatos foram processados')
         time.sleep(2)
@@ -177,27 +177,22 @@ def acharContato():
     
     try:
         element = WebDriverWait(sessao, 1).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'i0jNr')][contains(text(),'Nenhuma conversa, contato ou mensagem foram encontradas')]"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Contatos')]"))
         )
-        print(('O contato {0} não foi encontrado, COD1.1').format(contato))
-    except TimeoutException:
-        try:
-            element = WebDriverWait(sessao, 2).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Contatos')]"))
-            )
-            print(('O contato {0} foi encontrado, COD2').format(contato))
-            # Caminho para grupo
-            # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span[contains(text(),'{0}')]
-            # Caminho para conversa
-            # //*[@id='pane-side']/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]
-            conversa = sessao.find_element_by_xpath(("//div[contains(@class,'_3vPI2')]/div/span/span/span[contains(text(),'{0}')]").format(contato))
-            conversa.click()
-            mandarMensagem()
+        print(('O contato {0} foi encontrado, COD2').format(contato))
+        # Caminho para grupo
+        # //*[@id="pane-side"]/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span[contains(text(),'{0}')]
+        # Caminho para conversa
+        # //*[@id='pane-side']/div[1]/div/div/div/div/div/div[2]/div[1]/div[1]/span/span/span[contains(text(),'{0}')]
+        # Caminho para contatos
+        conversa = sessao.find_element_by_xpath(("//div[contains(@class,'_3vPI2')]/div/span/span/span[contains(text(),'{0}')]").format(contato))
+        conversa.click()
+        mandarMensagem()
 
-        except TimeoutException:
-            print(('O contato {0} não foi encontrado, COD2.1').format(contato))
-        except NoSuchElementException:
-            print(('A conversa do contato {0} não foi encontrada, COD2.2').format(contato))
+    except TimeoutException:
+        print(('O contato {0} não foi encontrado, COD2.1').format(contato))
+    except NoSuchElementException:
+        print(('A conversa do contato {0} não foi encontrada, COD2.2').format(contato))
 
 def mandarMensagem():
     try:
@@ -222,6 +217,7 @@ def mandarMensagem():
 def sair():
     print('Fechando o whatsapp')
     sessao.quit()
+    t = time.localtime()
     tempoFinal = time.strftime("%H:%M:%S", t)
     print(('Final do script: {0}').format(tempoFinal))
 
